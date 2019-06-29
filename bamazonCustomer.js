@@ -22,16 +22,24 @@ function purchaseItem() {
             type: "input",
             message: "How many would you like?",
             name: "quantitySelection"
+        },
+        {
+            type: "confirm",
+            message: "Would you like to checkout?",
+            name: "confirmSelection"
         }
     ]).then(function (inquierResponse) {
-        // if (inquierResponse.itemSelection)
-        console.log(inquierResponse.itemSelection)
-        console.log(inquierResponse.quantitySelection)
-        if (inquierResponse.itemSelection !== product_id) {
-            console.log("Item is not available")
-        } else {
-            console.log("Item is available")
-        }
+        connection.query("SELECT * FROM product", function (err, res) {
+            if (err) throw err;
+            console.log(res.product_id)
+            // console.log(inquierResponse.itemSelection)
+            // console.log(inquierResponse.quantitySelection)
+            // if (inquierResponse.itemSelection !== res.product_id) {
+            //     console.log("Item is not available")
+            // } else {
+            //     console.log("Item is available")
+            // }
+        })
     })
 }
 
@@ -54,7 +62,7 @@ function readItems() {
             )
         }
         console.log(table.toString());
-        connection.end();
+        // connection.end();
     })
 }
 
@@ -63,15 +71,18 @@ function bamazonHome() {
         {
             type: "list",
             message: "Welcome to bamazon How may we help you",
-            choices: ["Purchase", "Option 1", "Option 2"],
+            choices: ["Purchase", "Exit"],
             name: "listOptions"
         }
     ]).then(function (inquierResponse) {
         if (inquierResponse.listOptions === "Purchase") {
             console.log("Purchase selected, pick your item")
             readItems();
-            console.log(" ")
             purchaseItem();
+        }
+        if (inquierResponse.listOptions === "Exit") {
+            console.log("Thank you for shopping at bamazon");
+            connection.end();
         }
     })
 }
