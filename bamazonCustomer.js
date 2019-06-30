@@ -43,32 +43,27 @@ function purchaseItem() {
         }
     ]).then(function (inquierResponse) {
         //if statement for confirmation === true
-        // SELECT products SET product_quantity * ? WHERE product_ID = ?
-        connection.query('UPDATE products SET product_stock = product_stock - ? WHERE product_id = ?',
+        // var updateProducts = 'UPDATE products SET product_stock = product_stock - ? WHERE product_id = ?'
+        var updateProducts = 'UPDATE products SET product_stock = product_stock - ? WHERE product_id = ?'
+        connection.query(updateProducts,
             [inquierResponse.quantitySelection, inquierResponse.itemSelection],
-            // [
-            //     {
-            //         products_stock: inquierResponse.quantitySelection,
-            //         products_id: inquierResponse.itemSelection
-
-            //     }
-            // ],
             function (err, res) {
                 if (err) throw err;
                 console.log("Purchase complete!!")
                 console.log(res.affectedRows + " products updated")
                 reciept();
                 bamazonHome();
+                // checkQuantity();
             })
 
+        function checkQuantity() {
+            connection.query("SELECT IF(product_stock > 0), ")
+        }
+
         function reciept() {
-            console.log("reciept is printed here");
-            // FROM products WHERE product_stock = ? AND product_name = ?
-            // , SUM(?) AS total cost FROM products
-            //  
-            // connection.query("SELECT product_id, product_name, product_stock, product_price SUM(product_price * ?) AS total FROM products WHERE product_id = ?",
-            connection.query("SELECT product_id, product_name, product_stock, product_price, (product_price * ?) AS total FROM products WHERE product_id = ?",
-                [inquierResponse.quantitySelection, inquierResponse.itemSelection],
+            var reciept = "SELECT product_id, product_name, product_stock = ?, product_price, (product_price * ?) AS total FROM products WHERE product_id = ?"
+            connection.query(reciept,
+                [inquierResponse.quantitySelection, inquierResponse.quantitySelection, inquierResponse.itemSelection],
                 function (err, res) {
                     if (err) throw err;
                     var table = new Table({
@@ -85,15 +80,10 @@ function purchaseItem() {
                         )
                     }
                     console.log(table.toString());
-                    // connection.end();
                 });
         }
-
     })
 }
-
-
-
 // function checkQuantity() {
 //     connection.query("SELECT product_stock WHERE product_ID = ?"),
 //         []
