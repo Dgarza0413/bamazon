@@ -17,6 +17,40 @@ connection.connect(function (err) {
     bamazonHome();
 });
 
+//READ UPDATED table
+function bamazonHome() {
+    inquier.prompt([
+        {
+            type: "list",
+            message: "Welcome to bamazon How may we help you",
+            choices: ["Purchase", "Exit"],
+            name: "listOptions"
+        }
+    ]).then(function (inquierResponse) {
+        if (inquierResponse.listOptions === "Purchase") {
+            console.log("Purchase selected, pick your item")
+            readItems();
+        }
+        if (inquierResponse.listOptions === "Exit") {
+            console.log("Thank you for shopping at bamazon");
+            connection.end();
+        }
+    })
+}
+
+function checkQuantity(id) {
+    // return true
+    var checkID = "SELECT * FROM products WHERE product_id = ?"
+    connection.query(checkID, [id],
+        function (err, res) {
+            console.log(res.length)
+            if (err) throw err;
+
+            // res[0].product_stock > 0 ? true : false
+        })
+}
+
+
 //UPDATE table
 function purchaseItem() {
     inquier.prompt([
@@ -29,12 +63,6 @@ function purchaseItem() {
             type: "input",
             message: "How many would you like?",
             name: "quantitySelection",
-            validate: function (value) {
-                if (isNaN(value) === false) {
-                    return true;
-                }
-                return false;
-            }
         },
         {
             type: "confirm",
@@ -42,52 +70,101 @@ function purchaseItem() {
             name: "confirmSelection"
         }
     ]).then(function (inquierResponse) {
-        //if statement for confirmation === true
-        // var updateProducts = 'UPDATE products SET product_stock = product_stock - ? WHERE product_id = ?'
+        var checkID = "SELECT * FROM products WHERE product_id = ?"
         var updateProducts = 'UPDATE products SET product_stock = product_stock - ? WHERE product_id = ?'
-        connection.query(updateProducts,
-            [inquierResponse.quantitySelection, inquierResponse.itemSelection],
+        var query = connection.query(checkID, [inquierResponse.itemSelection],
             function (err, res) {
+                console.log("this is id " + inquierResponse.itemSelection)
+                console.log("this is quantity: " + inquierResponse.quantitySelection)
                 if (err) throw err;
-                console.log("Purchase complete!!")
-                console.log(res.affectedRows + " products updated")
-                reciept();
-                bamazonHome();
-                // checkQuantity();
+
+                if (res[0].product_stock > inquierResponse.quantitySelection) {
+                    connection.query(updateProducts, [inquierResponse.quantitySelection, inquierResponse.itemSelection],
+                        function (err, res) {
+                            if (err) throw err;
+                            console.log("Purchase complete!!")
+                            console.log(res.affectedRows + " products updated")
+                            bamazonHome();
+                        })
+                    // reciept(inquierResponse.itemSelection, inquierResponse.quantitySelection)
+                } else {
+                    console.log("this is false")
+                }
             })
 
-        function checkQuantity() {
-            connection.query("SELECT IF(product_stock > 0), ")
-        }
 
-        function reciept() {
-            var reciept = "SELECT product_id, product_name, product_stock = ?, product_price, (product_price * ?) AS total FROM products WHERE product_id = ?"
-            connection.query(reciept,
-                [inquierResponse.quantitySelection, inquierResponse.quantitySelection, inquierResponse.itemSelection],
-                function (err, res) {
-                    if (err) throw err;
-                    var table = new Table({
-                        head: ["Product ID", "Product Name", "Product Stock", "Product Price", "Total"],
-                        colWidths: [12, 20, 15, 10, 10]
-                    })
-                    for (var i = 0; i < res.length; i++) {
-                        table.push(
-                            [`${res[i].product_id}`,
-                            `${res[i].product_name}`,
-                            `${res[i].product_stock}`,
-                            `${res[i].product_price}`,
-                            `${res[i].total}`]
-                        )
-                    }
-                    console.log(table.toString());
-                });
-        }
+
+
+
+
+        // if (query) {
+        //     console.log("This is true")
+        //     // var updateProducts = 'UPDATE products SET product_stock = product_stock - ? WHERE product_id = ?'
+        //     // connection.query(updateProducts,
+        //     //     [inquierResponse.quantitySelection, inquierResponse.itemSelection],
+        //     //     function (err, res)
+        //     //     // if (checkQuantity() === true) {
+        //     //     {
+        //     //         if (err) throw err;
+        //     //         console.log("Purchase complete!!")
+        //     //         console.log(res.affectedRows + " products updated")
+        //     //         bamazonHome();
+        //     //     })
+        //     // reciept(inquierResponse.itemSelection, inquierResponse.quantitySelection);
+        // } else {
+        //     console.log("this is false")
+        // }
+
+
+        // console.log("result: " + checkQuantity(inquierResponse.itemSelection));
+        // // console.log("result " + checkQuantity(inquierResponse.itemSelection))
+        // if (checkQuantity(inquierResponse.itemSelection) === true) {
+        //     var updateProducts = 'UPDATE products SET product_stock = product_stock - ? WHERE product_id = ?'
+        //     connection.query(updateProducts,
+        //         [inquierResponse.quantitySelection, inquierResponse.itemSelection],
+        //         function (err, res)
+        //         // if (checkQuantity() === true) {
+        //         {
+        //             if (err) throw err;
+        //             console.log("Purchase complete!!")
+        //             console.log(res.affectedRows + " products updated")
+        //             bamazonHome();
+        //         })
+        //     // reciept(inquierResponse.itemSelection, inquierResponse.quantitySelection);
+        // } else if (checkQuantity() === false) {
+        //     console.log("you have reached the unavailable else")
+        // }
     })
 }
-// function checkQuantity() {
-//     connection.query("SELECT product_stock WHERE product_ID = ?"),
-//         []
-// }
+
+// using scope within the inquier response promise
+function reciept(id, quantity) {
+    var reciept = "SELECT * FROM products WHERE product_id = ?"
+    connection.query(reciept,
+        [inquierResponse.itemSelection],
+        function (err, res) {
+            if (err) throw err;
+
+            console.log(quantity * res[0].product_price)
+
+            var table = new Table({
+                head: ["ID", "Product Name", "Quantity", "Product Price", "Total"],
+                colWidths: [5, 20, 15, 10, 10]
+            })
+            for (var i = 0; i < res.length; i++) {
+                table.push(
+                    [`${res[i].product_id}`,
+                    `${res[i].product_name}`,
+                    `${quantity}`,
+                    `${res[i].product_price}`,
+                    `${quantity * res[i].product_price}`]
+                )
+            }
+            console.log(table.toString());
+        });
+}
+
+
 
 //READ table
 function readItems() {
@@ -111,30 +188,6 @@ function readItems() {
         purchaseItem();
     })
 }
-
-//READ UPDATED table
-
-
-function bamazonHome() {
-    inquier.prompt([
-        {
-            type: "list",
-            message: "Welcome to bamazon How may we help you",
-            choices: ["Purchase", "Exit"],
-            name: "listOptions"
-        }
-    ]).then(function (inquierResponse) {
-        if (inquierResponse.listOptions === "Purchase") {
-            console.log("Purchase selected, pick your item")
-            readItems();
-        }
-        if (inquierResponse.listOptions === "Exit") {
-            console.log("Thank you for shopping at bamazon");
-            connection.end();
-        }
-    })
-}
-
 
 
 //COMPLETE

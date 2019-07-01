@@ -59,7 +59,6 @@ function viewProducts() {
             colWidths: [12, 20, 15, 10, 10]
         })
         for (var i = 0; i < res.length; i++) {
-
             table.push(
                 [`${res[i].product_id}`,
                 `${res[i].product_name}`,
