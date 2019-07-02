@@ -21,7 +21,7 @@ The app starts with a prompt that is using the inquirer npm package that calls a
 ### picture
 reference to bamazonCustomer:
 ![alt text][logo]
-[logo]: bamazon/assets/images/bamazonCustomer.png
+[logo]: https://github.com/bamazon/assets/images/bamazonCustomer.png
 
 ## About Manager js
 The app starts with another prompt utilizing the inquirer package that will call five different options being:
