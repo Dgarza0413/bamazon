@@ -1,4 +1,3 @@
-// inquirer promrt a list of menu options (challenge #2)
 require('dotenv').config()
 
 var Table = require("cli-table");

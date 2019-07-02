@@ -26,10 +26,10 @@ The app starts with another prompt utilizing the inquirer package that will call
     * Add New Product
     * Exit
 
-  * If a manager selects `View Products for Sale`, the app should list every available item: the item IDs, names, prices, and quantities.
+  * If `View Products for Sale` is selected, the app lists the item IDs, names, prices, and quantities.
 
-  * If a manager selects `View Low Inventory`, then it should list all items with an inventory count lower than five.
+  * If `View Low Inventory` is selected, the app then lists items with an inventory count lower than fifthteen.
 
-  * If a manager selects `Add to Inventory`, your app should display a prompt that will let the manager "add more" of any item currently in the store.
+  * If `Add to Inventory` is selected, the app displays a prompt that allows the user to "add more" of any item that calls the id and quantity that is then added to the table.
 
-  * If a manager selects `Add New Product`, it should allow the manager to add a completely new product to the store.
+  * If `Add New Product` is selected, the app displays a prompt that inserts a products name, quantity, price, and department.
