@@ -1,3 +1,28 @@
+require('dotenv').config()
+// in this file we will display all of the items available for purchase
+//we first can require our mysql database
+var mysql = require("mysql");
+var inquier = require("inquirer");
+var Table = require("cli-table");
+var connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: process.env.BAMAZON_DB_PASSWORD,
+    database: "bamazon_db",
+})
+
+connection.connect(function (err) {
+    if (err) throw err;
+    console.log("connected as id " + connection.threadId + "\n")
+    bamazonSupervisor();
+});
+
+function bamazonSupervisor() {
+    inquier.prompt([
+
+    ])
+}
+
 // (challenge #3)
 // views product sales by department
 // creates new department

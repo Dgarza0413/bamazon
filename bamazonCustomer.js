@@ -69,19 +69,14 @@ function purchaseItem() {
                         function (err, res) {
                             if (err) throw err;
                             console.log("Purchase complete!!")
-                            console.log(res.affectedRows + " products updated")
-                            // bamazonHome();
                         })
                     connection.query(reciept,
                         [inquierResponse.itemSelection, inquierResponse.quantitySelection],
                         function (err, res) {
                             if (err) throw err;
-
-                            console.log(inquierResponse.quantitySelection * res[0].product_price)
-
                             var table = new Table({
                                 head: ["ID", "Product Name", "Quantity", "Product Price", "Total"],
-                                colWidths: [5, 20, 15, 10, 10]
+                                colWidths: [5, 20, 15, 15, 10]
                             })
                             for (var i = 0; i < res.length; i++) {
                                 table.push(
@@ -92,7 +87,7 @@ function purchaseItem() {
                                     `${inquierResponse.quantitySelection * res[i].product_price}`]
                                 )
                             }
-                            console.log("here is your reciept")
+                            console.log("Here is your reciept")
                             console.log(table.toString());
                             console.log("")
                             bamazonHome();
@@ -100,7 +95,6 @@ function purchaseItem() {
                 } else {
                     console.log("this item is unavailable returning to home")
                     bamazonHome();
-
                 }
             })
     })
