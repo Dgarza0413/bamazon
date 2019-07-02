@@ -33,3 +33,6 @@ The app starts with another prompt utilizing the inquirer package that will call
   * If `Add to Inventory` is selected, the app displays a prompt that allows the user to "add more" of any item that calls the id and quantity that is then added to the table.
 
   * If `Add New Product` is selected, the app displays a prompt that inserts a products name, quantity, price, and department.
+
+## About Supervisor js
+It is to be completed
