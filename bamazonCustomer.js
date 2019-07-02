@@ -38,19 +38,6 @@ function bamazonHome() {
     })
 }
 
-function checkQuantity(id) {
-    // return true
-    var checkID = "SELECT * FROM products WHERE product_id = ?"
-    connection.query(checkID, [id],
-        function (err, res) {
-            console.log(res.length)
-            if (err) throw err;
-
-            // res[0].product_stock > 0 ? true : false
-        })
-}
-
-
 //UPDATE table
 function purchaseItem() {
     inquier.prompt([
@@ -72,99 +59,52 @@ function purchaseItem() {
     ]).then(function (inquierResponse) {
         var checkID = "SELECT * FROM products WHERE product_id = ?"
         var updateProducts = 'UPDATE products SET product_stock = product_stock - ? WHERE product_id = ?'
+        var reciept = "SELECT * FROM products WHERE product_id = ?"
+
         var query = connection.query(checkID, [inquierResponse.itemSelection],
             function (err, res) {
-                console.log("this is id " + inquierResponse.itemSelection)
-                console.log("this is quantity: " + inquierResponse.quantitySelection)
                 if (err) throw err;
-
                 if (res[0].product_stock > inquierResponse.quantitySelection) {
                     connection.query(updateProducts, [inquierResponse.quantitySelection, inquierResponse.itemSelection],
                         function (err, res) {
                             if (err) throw err;
                             console.log("Purchase complete!!")
                             console.log(res.affectedRows + " products updated")
-                            bamazonHome();
+                            // bamazonHome();
                         })
-                    // reciept(inquierResponse.itemSelection, inquierResponse.quantitySelection)
+                    connection.query(reciept,
+                        [inquierResponse.itemSelection, inquierResponse.quantitySelection],
+                        function (err, res) {
+                            if (err) throw err;
+
+                            console.log(inquierResponse.quantitySelection * res[0].product_price)
+
+                            var table = new Table({
+                                head: ["ID", "Product Name", "Quantity", "Product Price", "Total"],
+                                colWidths: [5, 20, 15, 10, 10]
+                            })
+                            for (var i = 0; i < res.length; i++) {
+                                table.push(
+                                    [`${res[i].product_id}`,
+                                    `${res[i].product_name}`,
+                                    `${inquierResponse.quantitySelection}`,
+                                    `${res[i].product_price}`,
+                                    `${inquierResponse.quantitySelection * res[i].product_price}`]
+                                )
+                            }
+                            console.log("here is your reciept")
+                            console.log(table.toString());
+                            console.log("")
+                            bamazonHome();
+                        });
                 } else {
-                    console.log("this is false")
+                    console.log("this item is unavailable returning to home")
+                    bamazonHome();
+
                 }
             })
-
-
-
-
-
-
-        // if (query) {
-        //     console.log("This is true")
-        //     // var updateProducts = 'UPDATE products SET product_stock = product_stock - ? WHERE product_id = ?'
-        //     // connection.query(updateProducts,
-        //     //     [inquierResponse.quantitySelection, inquierResponse.itemSelection],
-        //     //     function (err, res)
-        //     //     // if (checkQuantity() === true) {
-        //     //     {
-        //     //         if (err) throw err;
-        //     //         console.log("Purchase complete!!")
-        //     //         console.log(res.affectedRows + " products updated")
-        //     //         bamazonHome();
-        //     //     })
-        //     // reciept(inquierResponse.itemSelection, inquierResponse.quantitySelection);
-        // } else {
-        //     console.log("this is false")
-        // }
-
-
-        // console.log("result: " + checkQuantity(inquierResponse.itemSelection));
-        // // console.log("result " + checkQuantity(inquierResponse.itemSelection))
-        // if (checkQuantity(inquierResponse.itemSelection) === true) {
-        //     var updateProducts = 'UPDATE products SET product_stock = product_stock - ? WHERE product_id = ?'
-        //     connection.query(updateProducts,
-        //         [inquierResponse.quantitySelection, inquierResponse.itemSelection],
-        //         function (err, res)
-        //         // if (checkQuantity() === true) {
-        //         {
-        //             if (err) throw err;
-        //             console.log("Purchase complete!!")
-        //             console.log(res.affectedRows + " products updated")
-        //             bamazonHome();
-        //         })
-        //     // reciept(inquierResponse.itemSelection, inquierResponse.quantitySelection);
-        // } else if (checkQuantity() === false) {
-        //     console.log("you have reached the unavailable else")
-        // }
     })
 }
-
-// using scope within the inquier response promise
-function reciept(id, quantity) {
-    var reciept = "SELECT * FROM products WHERE product_id = ?"
-    connection.query(reciept,
-        [inquierResponse.itemSelection],
-        function (err, res) {
-            if (err) throw err;
-
-            console.log(quantity * res[0].product_price)
-
-            var table = new Table({
-                head: ["ID", "Product Name", "Quantity", "Product Price", "Total"],
-                colWidths: [5, 20, 15, 10, 10]
-            })
-            for (var i = 0; i < res.length; i++) {
-                table.push(
-                    [`${res[i].product_id}`,
-                    `${res[i].product_name}`,
-                    `${quantity}`,
-                    `${res[i].product_price}`,
-                    `${quantity * res[i].product_price}`]
-                )
-            }
-            console.log(table.toString());
-        });
-}
-
-
 
 //READ table
 function readItems() {
