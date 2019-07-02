@@ -18,6 +18,11 @@ The app starts with a prompt that is using the inquirer npm package that calls a
   2. After the order is placed the application performs a check within javascript for product_stock in MYSQL and continues if the product is available with the quantity that was asked for.
   3. a reciept is then printed with the total quantity requested as well as the price that is marked with the item.
 
+### picture
+reference to bamazonCustomer:
+![alt text][logo]
+[logo]: bamazon/assets/images/bamazonCustomer.png
+
 ## About Manager js
 The app starts with another prompt utilizing the inquirer package that will call five different options being:
     * View Products for Sale

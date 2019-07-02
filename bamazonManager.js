@@ -1,5 +1,5 @@
+//require packages installed from npm
 require('dotenv').config()
-
 var Table = require("cli-table");
 var inquirer = require("inquirer")
 var mysql = require("mysql")
@@ -10,12 +10,14 @@ var connection = mysql.createConnection({
     database: "bamazon_db",
 })
 
+//call the mysql createConnection
 connection.connect(function (err) {
     if (err) throw err;
     console.log("connected as id " + connection.threadId + "\n")
     bamazonManger()
 });
 
+//read list
 function bamazonManger() {
     inquirer.prompt([
         {
@@ -44,7 +46,6 @@ function bamazonManger() {
         }
         if (inquirerResponse.optionSelection === "Exit") {
             console.log("Good Bye")
-            connection.end()
         }
     })
 }
@@ -58,11 +59,13 @@ function viewProducts() {
         })
         for (var i = 0; i < res.length; i++) {
             table.push(
-                [`${res[i].product_id}`,
-                `${res[i].product_name}`,
-                `${res[i].product_stock}`,
-                `${res[i].product_price}`,
-                `${res[i].product_department}`]
+                [
+                    `${res[i].product_id}`,
+                    `${res[i].product_name}`,
+                    `${res[i].product_stock}`,
+                    `${res[i].product_price}`,
+                    `${res[i].product_department}`
+                ]
             )
         }
         console.log(table.toString());
@@ -157,8 +160,6 @@ function addNewItem() {
                 if (err) throw err;
                 console.log("items added")
                 viewProducts()
-                console.log("Redirecting to bamazonManager")
-                bamazonManger()
             }
         )
     })

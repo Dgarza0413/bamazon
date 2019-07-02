@@ -1,6 +1,5 @@
+//require packages installed from npm
 require('dotenv').config()
-// in this file we will display all of the items available for purchase
-//we first can require our mysql database
 var mysql = require("mysql");
 var inquier = require("inquirer");
 var Table = require("cli-table");
@@ -11,6 +10,7 @@ var connection = mysql.createConnection({
     database: "bamazon_db",
 })
 
+//call the mysql createConnection
 connection.connect(function (err) {
     if (err) throw err;
     console.log("connected as id " + connection.threadId + "\n")
@@ -60,7 +60,6 @@ function purchaseItem() {
         var checkID = "SELECT * FROM products WHERE product_id = ?"
         var updateProducts = 'UPDATE products SET product_stock = product_stock - ? WHERE product_id = ?'
         var reciept = "SELECT * FROM products WHERE product_id = ?"
-
         var query = connection.query(checkID, [inquierResponse.itemSelection],
             function (err, res) {
                 if (err) throw err;
@@ -76,7 +75,7 @@ function purchaseItem() {
                             if (err) throw err;
                             var table = new Table({
                                 head: ["ID", "Product Name", "Quantity", "Product Price", "Total"],
-                                colWidths: [5, 20, 15, 15, 10]
+                                colWidths: [12, 20, 15, 15, 10]
                             })
                             for (var i = 0; i < res.length; i++) {
                                 table.push(
@@ -88,6 +87,7 @@ function purchaseItem() {
                                 )
                             }
                             console.log("Here is your reciept")
+                            console.log("")
                             console.log(table.toString());
                             console.log("")
                             bamazonHome();
@@ -122,30 +122,3 @@ function readItems() {
         purchaseItem();
     })
 }
-
-
-//COMPLETE
-// includes the following
-// ids
-// names
-// prices of the products
-
-//COMPLETE
-// first it should ask them the id of the product for purchase
-// second should ask how many units
-
-// when order is placed a series of checks occur for availablity
-//     if not its insufficient quantity or out of stock
-//     if store has amount it fulfills order
-//         updates the database and reflects quantity
-//         present cost as well as to mulitply by the quantity purchased
-//          to the products product sales column
-
-// (challenge #3)
-// create a new MySQL table called departments that includes
-    //- department_id
-    //- department_name
-    //- over_head_costs (cost per department)
-
-//check for updates in inventory listed in products column
-
