@@ -27,25 +27,26 @@ function bamazonManger() {
             name: "optionSelection"
         }
     ]).then(function (inquirerResponse) {
-        if (inquirerResponse.optionSelection === "View Products for Sale") {
-            console.log("Products for sale has been Selected")
-            viewProducts()
-        }
-        if (inquirerResponse.optionSelection === "View Low Inventory") {
-            console.log("View Low Inventory has been Selected")
-            viewLowInv()
-        }
-        if (inquirerResponse.optionSelection === "Add to Inventory") {
-            console.log("Add to Inventory has been Selected")
-            addInv()
-
-        }
-        if (inquirerResponse.optionSelection === "Add New Product") {
-            console.log("Add New Product has been Selected")
-            addNewItem()
-        }
-        if (inquirerResponse.optionSelection === "Exit") {
-            console.log("Good Bye")
+        switch (inquirerResponse.optionSelection) {
+            case "View Products for Sale":
+                console.log("Products for sale has been Selected")
+                viewProducts()
+                break;
+            case "View Low Inventory":
+                console.log("View Low Inventory has been Selected")
+                viewLowInv()
+                break;
+            case "Add to Inventory":
+                console.log("Add to Inventory has been Selected")
+                addInv()
+                break;
+            case "Add New Product":
+                console.log("Add New Product has been Selected")
+                addNewItem()
+                break;
+            case "Exit":
+                console.log("Good Bye")
+                break;
         }
     })
 }

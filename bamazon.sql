@@ -3,12 +3,12 @@ CREATE DATABASE bamazon_db;
 USE bamazon_db;
 
 CREATE TABLE products(
-	product_id INTEGER AUTO_INCREMENT NULL,
+	product_id INTEGER AUTO_INCREMENT NOT NULL,
     product_name VARCHAR(30) NOT NULL,
     product_price DECIMAL(11, 2) NOT NULL,
     product_department VARCHAR(30) NOT NULL,
     product_stock INTEGER(11) NOT NULL,
-    total_cost INTEGER(11) NULL
+    total_cost INTEGER(11) NULL,
     PRIMARY KEY (product_id)
 );
 
@@ -36,18 +36,18 @@ VALUES ("washing machine", 429.99, "appliances", 10);
 INSERT INTO products(product_name, product_price, product_department, product_stock)
 VALUES ("dryer machine", 529.99, "appliances", 30);
 
-
 CREATE TABLE departments(
 	department_id INTEGER AUTO_INCREMENT NOT NULL,
     department_name VARCHAR(30) NOT NULL,
+    department_overhead INT NOT NULL,
     PRIMARY KEY(department_id)
 );
 
-INSERT INTO departments(department_name)
-VALUES ("electronics");
+INSERT INTO departments(department_name, department_overhead)
+VALUES ("electronics", 200000);
 
-INSERT INTO departments(department_name)
-VALUES ("clothing");
+INSERT INTO departments(department_name, department_overhead)
+VALUES ("clothing", 90000);
 
-INSERT INTO departments(department_name)
-VALUES ("appliances");
+INSERT INTO departments(department_name, department_overhead)
+VALUES ("appliances", 250000);

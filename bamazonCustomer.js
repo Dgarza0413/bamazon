@@ -27,13 +27,15 @@ function bamazonHome() {
             name: "listOptions"
         }
     ]).then(function (inquierResponse) {
-        if (inquierResponse.listOptions === "Purchase") {
-            console.log("Purchase selected, pick your item")
-            readItems();
-        }
-        if (inquierResponse.listOptions === "Exit") {
-            console.log("Thank you for shopping at bamazon");
-            connection.end();
+        switch (inquierResponse.listOptions) {
+            case "Purchase":
+                console.log("purchase selected, pick your item")
+                readItems();
+                break;
+            case "Exit":
+                console.log("Thank you for shopping at bamazon");
+                connection.end();
+                break;
         }
     })
 }
@@ -79,11 +81,13 @@ function purchaseItem() {
                             })
                             for (var i = 0; i < res.length; i++) {
                                 table.push(
-                                    [`${res[i].product_id}`,
-                                    `${res[i].product_name}`,
-                                    `${inquierResponse.quantitySelection}`,
-                                    `${res[i].product_price}`,
-                                    `${inquierResponse.quantitySelection * res[i].product_price}`]
+                                    [
+                                        `${res[i].product_id}`,
+                                        `${res[i].product_name}`,
+                                        `${inquierResponse.quantitySelection}`,
+                                        `${res[i].product_price}`,
+                                        `${inquierResponse.quantitySelection * res[i].product_price}`
+                                    ]
                                 )
                             }
                             console.log("Here is your reciept")
